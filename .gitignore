@@ -1,0 +1,39 @@
+# ─── Environment & Secrets ───
+.env
+.env.*
+!.env.example
+
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ─── Virtual Environment ───
+venv/
+.venv/
+env/
+
+# ─── Uploads (temp files) ───
+temp/*.pdf
+temp/*.doc
+temp/*.docx
+
+# ─── IDE ───
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── OS ───
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Logs ───
+*.log

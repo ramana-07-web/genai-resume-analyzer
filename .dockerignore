@@ -1,0 +1,10 @@
+.env
+.git
+__pycache__
+*.pyc
+temp/*.pdf
+.vscode
+.idea
+.DS_Store
+README.md
+LICENSE

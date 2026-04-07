@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ResumeIQ — AI Resume Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --ink:    #0d0d0d;
+            --paper:  #faf8f4;
+            --accent: #c8472a;
+            --muted:  #8a8070;
+            --border: #e0d8cc;
+            --card:   #ffffff;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            background: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* LEFT PANEL */
+        .panel-left {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 64px 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+        .panel-left::before {
+            content: '';
+            position: absolute;
+            top: -120px; right: -120px;
+            width: 380px; height: 380px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(200,71,42,0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .brand {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 13px; letter-spacing: 0.18em;
+            text-transform: uppercase; font-weight: 500; color: var(--muted);
+            opacity: 0; animation: fadeUp 0.6s 0.1s forwards;
+        }
+        .brand-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+        .hero-text { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px 0; }
+        .hero-label {
+            font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--accent); font-weight: 500; margin-bottom: 20px;
+            opacity: 0; animation: fadeUp 0.6s 0.25s forwards;
+        }
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(38px, 4.5vw, 58px);
+            line-height: 1.1; font-weight: 700; margin-bottom: 28px;
+            opacity: 0; animation: fadeUp 0.7s 0.35s forwards;
+        }
+        .hero-title em { font-style: italic; color: var(--accent); }
+        .hero-body {
+            font-size: 15px; line-height: 1.8;
+            color: rgba(250,248,244,0.55); max-width: 380px;
+            opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+        }
+        .stats-row { display: flex; gap: 40px; opacity: 0; animation: fadeUp 0.7s 0.65s forwards; }
+        .stat { border-top: 1px solid rgba(255,255,255,0.12); padding-top: 18px; }
+        .stat-num { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; }
+        .stat-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+        /* RIGHT PANEL */
+        .panel-right { padding: 64px 56px; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; }
+        .form-header { margin-bottom: 44px; opacity: 0; animation: fadeUp 0.6s 0.4s forwards; }
+        .form-header h2 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .form-header p { font-size: 14px; color: var(--muted); }
+
+        .field { margin-bottom: 28px; opacity: 0; animation: fadeUp 0.6s forwards; }
+        .field:nth-child(1) { animation-delay: 0.5s; }
+        .field:nth-child(2) { animation-delay: 0.62s; }
+        .field label { display: block; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; margin-bottom: 10px; }
+
+        .file-zone {
+            border: 1.5px dashed var(--border); border-radius: 10px;
+            padding: 32px 20px; text-align: center; cursor: pointer;
+            transition: border-color 0.25s, background 0.25s;
+            position: relative; background: var(--paper);
+        }
+        .file-zone:hover, .file-zone.drag-over { border-color: var(--accent); background: #fff5f3; }
+        .file-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+        .file-icon { width: 40px; height: 40px; margin: 0 auto 12px; background: var(--ink); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .file-icon svg { width: 20px; height: 20px; fill: white; }
+        .file-zone-text { font-size: 14px; font-weight: 500; }
+        .file-zone-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+        .file-selected { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: 8px; display: none; }
+
+        textarea {
+            width: 100%; padding: 14px 16px;
+            border: 1.5px solid var(--border); border-radius: 10px;
+            font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300;
+            color: var(--ink); background: var(--card);
+            resize: vertical; min-height: 140px;
+            transition: border-color 0.2s; line-height: 1.7;
+        }
+        textarea:focus { outline: none; border-color: var(--ink); }
+        textarea::placeholder { color: #bfb8af; }
+
+        .submit-btn {
+            width: 100%; padding: 16px;
+            background: var(--ink); color: var(--paper);
+            font-family: 'DM Sans', sans-serif; font-size: 14px;
+            font-weight: 500; letter-spacing: 0.08em;
+            border: none; border-radius: 10px; cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            opacity: 0; animation: fadeUp 0.6s 0.75s forwards;
+        }
+        .submit-btn:hover { background: var(--accent); }
+        .submit-btn:active { transform: scale(0.99); }
+        .submit-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.7s linear infinite; display: none;
+        }
+        .privacy-note {
+            margin-top: 16px; font-size: 11px; color: var(--muted);
+            text-align: center; letter-spacing: 0.04em;
+            opacity: 0; animation: fadeUp 0.6s 0.85s forwards;
+        }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin   { to { transform: rotate(360deg); } }
+
+        @media (max-width: 860px) {
+            body { grid-template-columns: 1fr; }
+            .panel-left { min-height: auto; padding: 48px 32px; }
+            .hero-title { font-size: 36px; }
+            .stats-row { display: none; }
+            .panel-right { padding: 48px 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel-left">
+    <div class="brand"><span class="brand-dot"></span>ResumeIQ</div>
+    <div class="hero-text">
+        <div class="hero-label">Powered by Gemini AI</div>
+        <h1 class="hero-title">Your resume,<br><em>analyzed</em><br>in seconds.</h1>
+        <p class="hero-body">Upload your PDF resume and paste a job description. Our AI recruiter evaluates your match score, highlights gaps, and gives you actionable improvements.</p>
+    </div>
+    <div class="stats-row">
+        <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Parse accuracy</div></div>
+        <div class="stat"><div class="stat-num">&lt;10s</div><div class="stat-label">Analysis time</div></div>
+        <div class="stat"><div class="stat-num">4</div><div class="stat-label">Key insights</div></div>
+    </div>
+</div>
+
+<div class="panel-right">
+    <div class="form-header">
+        <h2>Analyze Your Resume</h2>
+        <p>Upload a PDF and paste the job description below.</p>
+    </div>
+
+    <form action="/analyze-ui" method="POST" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
+        <div class="field">
+            <label>Resume PDF</label>
+            <div class="file-zone" id="fileZone">
+                <input type="file" name="resume" accept=".pdf" required onchange="handleFile(this)" />
+                <div class="file-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>
+                </div>
+                <div class="file-zone-text">Drop your PDF here or click to browse</div>
+                <div class="file-zone-sub">Only PDF files · Max 5 MB</div>
+                <div class="file-selected" id="fileSelected"></div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Job Description</label>
+            <textarea name="job_desc" rows="6" placeholder="Paste the job description here. The more detail you include, the more accurate the analysis." required></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+            <span id="btnText">Analyze Resume</span>
+            <div class="spinner" id="spinner"></div>
+        </button>
+    </form>
+
+    <p class="privacy-note">🔒 Your file is processed and deleted immediately. Never stored.</p>
+</div>
+
+<script>
+    function handleFile(input) {
+        const el   = document.getElementById('fileSelected');
+        const zone = document.getElementById('fileZone');
+        if (input.files && input.files[0]) {
+            const file   = input.files[0];
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            el.textContent    = `✓ ${file.name} (${sizeMB} MB)`;
+            el.style.display  = 'block';
+            zone.style.borderColor = 'var(--accent)';
+        }
+    }
+    function handleSubmit(e) {
+        const input = document.querySelector('input[type="file"]');
+        if (input.files && input.files[0] && input.files[0].size / (1024*1024) > 5) {
+            e.preventDefault();
+            alert('File exceeds 5 MB limit. Please upload a smaller PDF.');
+            return;
+        }
+        const btn  = document.getElementById('submitBtn');
+        const text = document.getElementById('btnText');
+        const spin = document.getElementById('spinner');
+        btn.disabled      = true;
+        text.textContent  = 'Analyzing…';
+        spin.style.display = 'block';
+    }
+    const zone = document.getElementById('fileZone');
+    zone.addEventListener('dragover',  () => zone.classList.add('drag-over'));
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop',      () => zone.classList.remove('drag-over'));
+</script>
+</body>
+</html>
