@@ -34,12 +34,10 @@
     <td align="center"><b>Analysis Result</b></td>
   </tr>
   <tr>
-    <td><img src="https://via.placeholder.com/400x300?text=Upload+Page" alt="Upload Page" /></td>
-    <td><img src="https://via.placeholder.com/400x300?text=Analysis+Result" alt="Analysis Result" /></td>
+    <td><img src="screenshots/upload_page.png" alt="Upload Page" width="500" /></td>
+    <td><img src="screenshots/analysis_result.png" alt="Analysis Result" width="500" /></td>
   </tr>
 </table>
-
-> 💡 *Replace the placeholder images above with actual screenshots of your deployed app.*
 
 ---
 
