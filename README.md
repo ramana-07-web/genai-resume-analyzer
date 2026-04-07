@@ -89,7 +89,7 @@ PDF Upload → Resume Parser → Structured Data → Gemini AI → Analysis Repo
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/genairesumeanal.git
+git clone https://github.com/ramana-07-web/genairesumeanal.git
 cd genairesumeanal
 ```
 
