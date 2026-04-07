@@ -1,7 +1,7 @@
 <h1 align="center">🧠 ResumeIQ — AI Resume Analyzer</h1>
 
 <p align="center">
-  <strong>Upload a resume. Paste a job description. Get an AI-powered match analysis in seconds.</strong>
+  <strong>A GenAI-powered resume analyzer built with Flask and Gemini AI. Upload a resume, paste a job description, and get a Generative AI match analysis in seconds.</strong>
 </p>
 
 <p align="center">
