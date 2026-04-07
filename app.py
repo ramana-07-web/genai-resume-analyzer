@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()  # Load .env before anything else
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect
 import os
 import uuid
 
@@ -35,7 +35,7 @@ def save_upload(file) -> str:
 # -------------------- HOME --------------------
 @app.route("/")
 def home():
-    return "Gemini Resume Analyzer is running ✅"
+    return redirect("/ui")
 
 
 # -------------------- UI --------------------
