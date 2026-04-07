@@ -46,7 +46,7 @@
 ## 🏗️ Architecture
 
 ```
-genairesumeanal/
+genai-resume-analyzer/
 ├── app.py                  # Flask application (routes & logic)
 ├── utils/
 │   ├── __init__.py
@@ -89,8 +89,8 @@ PDF Upload → Resume Parser → Structured Data → Gemini AI → Analysis Repo
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ramana-07-web/genairesumeanal.git
-cd genairesumeanal
+git clone https://github.com/ramana-07-web/genai-resume-analyzer.git
+cd genai-resume-analyzer
 ```
 
 ### 2. Create a virtual environment
