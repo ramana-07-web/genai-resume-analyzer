@@ -11,6 +11,10 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
 </p>
 
+<p align="center">
+  <a href="https://genai-resume-analyzer-hclg.onrender.com"><b>👉 View Live Demo</b></a>
+</p>
+
 ---
 
 ## ✨ Features
